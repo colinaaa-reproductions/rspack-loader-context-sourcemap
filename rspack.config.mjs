@@ -1,6 +1,5 @@
 import path from "path";
 import { fileURLToPath } from "url";
-import HtmlWebpackPlugin from "html-webpack-plugin";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const isRunningWebpack = !!process.env.WEBPACK;
@@ -14,11 +13,32 @@ if (!isRunningRspack && !isRunningWebpack) {
  */
 const config = {
   mode: "development",
-  devtool: false,
   entry: {
     main: "./src/index",
   },
-  plugins: [new HtmlWebpackPlugin()],
+  devtool: false,
+  plugins: [
+    (compiler) => {
+      new compiler.webpack.SourceMapDevToolPlugin({
+        filename: "[file].map[query]",
+        moduleFilenameTemplate: "[absolute-resource-path]",
+        fallbackModuleFilenameTemplate: "[absolute-resource-path]?[hash]",
+        append: undefined,
+        module: true,
+        columns: true,
+        noSources: false,
+        namespace: undefined,
+        publicPath: "/",
+      }).apply(compiler);
+    },
+  ],
+  module: {
+    rules: [
+      {
+        loader: './test-loader.mjs'
+      }
+    ]
+  },
   output: {
     clean: true,
     path: isRunningWebpack

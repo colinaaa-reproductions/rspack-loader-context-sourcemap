@@ -1,3 +1,1 @@
-import('./render').then(exports => {
-    exports.render()
-})
+console.log(__SOURCEMAP__)
